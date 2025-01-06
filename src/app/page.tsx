@@ -1,57 +1,55 @@
 export default function Home() {
 	const arrData = [
 		{
-			category: "Frontend",
-			technologies: [
+			name: "Frontend",
+			children: [
 				{
 					name: "React.js",
-					subTechnologies: ["Angular.js"],
+					children: [{ name: "Angular.js" }],
 				},
 				{
 					name: "Next.js",
-					subTechnologies: ["Gatsby.js"],
+					children: [{ name: "G" }],
 				},
 			],
 		},
 		{
-			category: "Backend",
-			technologies: [
+			name: "Backend",
+			children: [
 				{
 					name: "Golang",
-					subTechnologies: [],
+					children: [],
 				},
 			],
 		},
 	];
 
+	// Recursive component
+	const RenderTech = ({ data, level }: { data: any[]; level: number }) => {
+		return (
+			<div>
+				{data.map((item, index) => (
+					<ol key={index}>
+						{/* Display index and level in the text */}
+						{`${" ".repeat(level * 2)}${index + 1}${level > 1 ? `.${level}` : ""}. ${item.name}`}
+
+						{/* If there are children, recursively render them */}
+						{item.children && item.children.length > 0 && (
+							<div style={{ paddingLeft: "20px" }}>
+								<RenderTech data={item.children} level={level + 1} />
+							</div>
+						)}
+					</ol>
+				))}
+			</div>
+		);
+	};
+
 	return (
 		<div className="container">
-			Technologies
-			<ol>
-				{/* category */}
-				{arrData.map((item, index) => (
-					<li key={index}>
-						{index + 1}. {item.category}
-						<ol>
-							{/* sub tech */}
-							{item.technologies.map((subTech, subIndex) => (
-								<li key={subIndex}>
-									{index + 1}.{subIndex + 1}. {subTech.name}
-									{/* sub sub tech */}
-									<ol>
-										{subTech.subTechnologies.map((subSubTech, subSubIndex) => (
-											<li key={subSubIndex}>
-												{index + 1}.{subIndex + 1}.{subSubIndex + 1}.{" "}
-												{subSubTech}
-											</li>
-										))}
-									</ol>
-								</li>
-							))}
-						</ol>
-					</li>
-				))}
-			</ol>
+			<h2>Technologies</h2>
+			{/* Render the categories */}
+			<RenderTech data={arrData} level={1} />
 		</div>
 	);
 }
