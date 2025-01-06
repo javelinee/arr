@@ -1,5 +1,10 @@
+interface Tech {
+	name: string;
+	children?: Tech[];
+}
+
 export default function Home() {
-	const arrData = [
+	const arrData: Tech[] = [
 		{
 			name: "Frontend",
 			children: [
@@ -24,32 +29,28 @@ export default function Home() {
 		},
 	];
 
-	// Recursive component
-	const RenderTech = ({ data, level }: { data: any[]; level: number }) => {
-		return (
-			<div>
-				{data.map((item, index) => (
-					<ol key={index}>
-						{/* Display index and level in the text */}
-						{`${" ".repeat(level * 2)}${index + 1}${level > 1 ? `.${level}` : ""}. ${item.name}`}
-
-						{/* If there are children, recursively render them */}
-						{item.children && item.children.length > 0 && (
-							<div style={{ paddingLeft: "20px" }}>
-								<RenderTech data={item.children} level={level + 1} />
-							</div>
-						)}
-					</ol>
-				))}
-			</div>
-		);
+	const RenderTech = (data: Tech[], prefix = "") => {
+		return data.map((item, index) => {
+			const currentPrefix = prefix ? `${prefix}.${index + 1}` : `${index + 1}`;
+			console.log("DEBUG123", currentPrefix);
+			return (
+				<div
+					key={currentPrefix}
+					style={{ paddingLeft: `${prefix.split(".").length * 20}px` }}
+				>
+					<div>{`${currentPrefix}. ${item.name}`}</div>
+					{item.children && item.children.length > 0 && (
+						<div>{RenderTech(item.children, currentPrefix)}</div>
+					)}
+				</div>
+			);
+		});
 	};
 
 	return (
 		<div className="container">
 			<h2>Technologies</h2>
-			{/* Render the categories */}
-			<RenderTech data={arrData} level={1} />
+			{RenderTech(arrData)}
 		</div>
 	);
 }
